@@ -13,8 +13,8 @@ RUN \
     # https
     openssl ca-certificates \
     build-base cmake musl-dev linux-headers \
-    # pip
-    py-pip \
+    # python and pip
+    python2-dev python3-dev py-pip \
     # proj4
     proj4 \
     # libkml dependencies
