@@ -1,0 +1,29 @@
+language: bash
+sudo: required
+services:
+  - docker
+env:
+  global:
+    - CONTAINER_IMAGE=sgs-scheduler-image
+
+before_script:
+  - export BUILD_DATE=$(date '+%d/%m/%Y %T UTC' -u)
+  - docker pull $USERNAME/$CONTAINER_IMAGE:latest || true
+
+script:
+  - docker build --cache-from $USERNAME/$CONTAINER_IMAGE:latest --build-arg BUILD_DATE="${BUILD_DATE}" --build-arg TRAVIS_COMMIT="${TRAVIS_COMMIT}" --tag $USERNAME/$CONTAINER_IMAGE:$TRAVIS_COMMIT --tag $USERNAME/$CONTAINER_IMAGE:latest .
+
+after_script:
+  - docker images
+
+before_deploy:
+  - echo $PASSWORD | docker login -u $USERNAME --password-stdin
+
+deploy:
+  provider: script
+  script: docker push $USERNAME/$CONTAINER_IMAGE:$TRAVIS_COMMIT && docker push $USERNAME/$CONTAINER_IMAGE:latest
+  on:
+    branch: master
+
+after_deploy:
+  - curl --header "Content-Type: application/json" --request POST --data '{}' https://hooks.microbadger.com/images/edineipiovesan/sgs-ci-build-image/yTsz_jn54cL8ZyJZrhrwqMFNDZY=
