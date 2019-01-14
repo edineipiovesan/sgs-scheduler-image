@@ -14,7 +14,7 @@ RUN \
     openssl ca-certificates \
     build-base cmake musl-dev linux-headers \
     # python and pip
-    python2-dev python3-dev py-pip \
+    python-dev py-pip \
     # proj4
     proj4 \
     # libkml dependencies
