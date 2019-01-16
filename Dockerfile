@@ -54,6 +54,8 @@ RUN \
         --without-pcraster \
         --without-webp \
     && make && make install && \
+    # copy gdalutils
+    cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
     apk add py-pip && \
     pip install gdal --no-cache-dir && \
