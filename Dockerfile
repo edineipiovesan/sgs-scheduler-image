@@ -6,6 +6,7 @@ ARG LIBKML_VERSION=1.3.0
 ARG BUILD_DATE=unknown
 ARG TRAVIS_COMMIT=unknown
 
+# Dependencies
 RUN \
     echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
@@ -24,12 +25,16 @@ RUN \
     zlib minizip expat uriparser boost && \
     update-ca-certificates && \
     mkdir /build && cd /build && \
-    apk --update add tar && \
-    # libkml
+    apk --update add tar
+
+# libkml
+RUN \
     wget -O libkml.tar.gz "https://github.com/libkml/libkml/archive/${LIBKML_VERSION}.tar.gz" && \
     tar --extract --file libkml.tar.gz && \
-    cd libkml-${LIBKML_VERSION} && mkdir build && cd build && cmake .. && make && make install && cd ../.. && \
-    # gdal
+    cd libkml-${LIBKML_VERSION} && mkdir build && cd build && cmake .. && make && make install && cd ../..
+
+# gdal
+RUN \
     wget -O gdal.tar.gz "https://github.com/OSGeo/gdal/archive/${GDAL_VERSION}.tar.gz" && \
     tar --extract --file gdal.tar.gz --strip-components 1 && \
     cd gdal && \
@@ -57,7 +62,6 @@ RUN \
     # copy gdalutils
     cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
-    apk add py-pip && \
     pip install gdal --no-cache-dir && \
     # fix proj4 path
     ln -s /usr/lib/libproj.so.13 /usr/lib/libproj.so && \
@@ -65,15 +69,14 @@ RUN \
     apk del build-dependencies && \
     cd / && \
     rm -rf build && \
-    rm -rf /var/cache/apk/* && \
-    rm -rf /usr/lib/python2.7
+    rm -rf /var/cache/apk/*
 
-    LABEL org.label-schema.build-date=$BUILD_DATE \
-          org.label-schema.name="SGS Docker image for Scheduler Application" \
-          org.label-schema.description="Docker image used by SGS CI process" \
-          org.label-schema.url="https://hub.docker.com/r/edineipiovesan/sgs-scheduler-image" \
-          org.label-schema.vcs-ref=$TRAVIS_COMMIT \
-          org.label-schema.vcs-url="https://github.com/edineipiovesan/sgs-scheduler-image" \
-          org.label-schema.vendor="Edinei Piovesan" \
-          org.label-schema.version=$TRAVIS_COMMIT \
-          org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE \
+        org.label-schema.name="SGS Docker image for Scheduler Application" \
+        org.label-schema.description="Docker image used by SGS CI process" \
+        org.label-schema.url="https://hub.docker.com/r/edineipiovesan/sgs-scheduler-image" \
+        org.label-schema.vcs-ref=$TRAVIS_COMMIT \
+        org.label-schema.vcs-url="https://github.com/edineipiovesan/sgs-scheduler-image" \
+        org.label-schema.vendor="Edinei Piovesan" \
+        org.label-schema.version=$TRAVIS_COMMIT \
+        org.label-schema.schema-version="1.0"
