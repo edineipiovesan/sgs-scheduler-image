@@ -58,10 +58,8 @@ RUN \
     # copy gdalutils
     cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
-    pip install gdal --no-cache-dir
-
-# cleanup
-RUN \
+    pip install gdal --no-cache-dir && \
+    # cleanup
     apk del build-dependencies && \
     cd / && \
     rm -rf build && \
