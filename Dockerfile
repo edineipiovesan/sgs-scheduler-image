@@ -6,9 +6,10 @@ ARG LIBKML_VERSION=1.3.0
 ARG BUILD_DATE=unknown
 ARG TRAVIS_COMMIT=unknown
 
-# virtual build-dependencies
+# build
 RUN \
     apk update && \
+    # virtual build-dependencies
     apk add --virtual build-dependencies \
     # https
     openssl ca-certificates \
@@ -21,16 +22,12 @@ RUN \
     update-ca-certificates && \
     mkdir /build && cd /build && \
     # utility
-    apk --update add tar tree
-
-# libkml
-RUN \
+    apk --update add tar tree && \
+    # libkml
     wget -O libkml.tar.gz "https://github.com/libkml/libkml/archive/${LIBKML_VERSION}.tar.gz" && \
     tar --extract --file libkml.tar.gz && \
-    cd libkml-${LIBKML_VERSION} && mkdir build && cd build && cmake .. && make && make install && cd ../..
-
-# gdal
-RUN \
+    cd libkml-${LIBKML_VERSION} && mkdir build && cd build && cmake .. && make && make install && cd ../.. && \
+    # gdal
     wget -O gdal.tar.gz "https://github.com/OSGeo/gdal/archive/${GDAL_VERSION}.tar.gz" && \
     tar --extract --file gdal.tar.gz --strip-components 1 && \
     cd gdal && \
