@@ -6,18 +6,13 @@ ARG LIBKML_VERSION=1.3.0
 ARG BUILD_DATE=unknown
 ARG TRAVIS_COMMIT=unknown
 
-# Dependencies
+# virtual build-dependencies
 RUN \
-    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
     apk add --virtual build-dependencies \
     # https
     openssl ca-certificates \
     build-base cmake musl-dev linux-headers \
-    # python and pip
-    python-dev py-pip \
-    # proj4
-    proj4 \
     # libkml dependencies
     zlib-dev minizip-dev expat-dev uriparser-dev boost-dev && \
     apk add \
@@ -25,6 +20,7 @@ RUN \
     zlib minizip expat uriparser boost && \
     update-ca-certificates && \
     mkdir /build && cd /build && \
+    # utility
     apk --update add tar
 
 # libkml
@@ -62,14 +58,24 @@ RUN \
     # copy gdalutils
     cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
-    pip install gdal --no-cache-dir && \
-    # fix proj4 path
-    ln -s /usr/lib/libproj.so.13 /usr/lib/libproj.so && \
-    # cleanup
+    pip install gdal --no-cache-dir
+
+# cleanup
+RUN \
     apk del build-dependencies && \
     cd / && \
     rm -rf build && \
     rm -rf /var/cache/apk/*
+
+# runtime dependencies
+RUN \
+    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+    apk update && \
+    apk add --update \
+    python-dev py-pip \
+    proj4 && \
+    # fix proj4 path
+    ln -s /usr/lib/libproj.so.13 /usr/lib/libproj.so
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
         org.label-schema.name="SGS Docker image for Scheduler Application" \
