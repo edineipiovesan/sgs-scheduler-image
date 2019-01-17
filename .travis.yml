@@ -26,4 +26,4 @@ deploy:
     branch: master
 
 after_deploy:
-  - curl --header "Content-Type: application/json" --request POST --data '{}' https://hooks.microbadger.com/images/edineipiovesan/sgs-ci-build-image/yTsz_jn54cL8ZyJZrhrwqMFNDZY=
+  - curl --header "Content-Type: application/json" --request POST --data '{}' https://hooks.microbadger.com/images/edineipiovesan/sgs-scheduler-image/dMhOywU5i1ED-RW4CVelfqBafc8=
