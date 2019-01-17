@@ -22,7 +22,8 @@ RUN \
     update-ca-certificates && \
     mkdir /build && cd /build && \
     # utility
-    apk --update add tar tree && \
+    apk --update add tar \
+    python-dev py-pip && \
     # libkml
     wget -O libkml.tar.gz "https://github.com/libkml/libkml/archive/${LIBKML_VERSION}.tar.gz" && \
     tar --extract --file libkml.tar.gz && \
@@ -53,7 +54,6 @@ RUN \
         --without-webp \
     && make && make install && \
     # copy gdalutils
-    find / -name gdalcopyproj.py && \
     cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
     pip install gdal --no-cache-dir && \
@@ -68,7 +68,6 @@ RUN \
     echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
     apk add --update \
-    python-dev py-pip \
     proj4 && \
     # fix proj4 path
     ln -s /usr/lib/libproj.so.13 /usr/lib/libproj.so
