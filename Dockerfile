@@ -21,7 +21,7 @@ RUN \
     update-ca-certificates && \
     mkdir /build && cd /build && \
     # utility
-    apk --update add tar
+    apk --update add tar tree
 
 # libkml
 RUN \
@@ -56,6 +56,8 @@ RUN \
         --without-webp \
     && make && make install && \
     # copy gdalutils
+    ls -lha / && \
+    tree -d /build && \
     cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
     pip install gdal --no-cache-dir && \
