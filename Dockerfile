@@ -53,7 +53,7 @@ RUN \
         --without-webp \
     && make && make install && \
     # copy gdalutils
-    find / -name gdalcopyproj.py
+    find / -name gdalcopyproj.py && \
     cp /build/gdal/swig/python/samples/*.py /usr/bin/ && \
     # gdal python bindings
     pip install gdal --no-cache-dir && \
